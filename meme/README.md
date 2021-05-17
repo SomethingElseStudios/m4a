@@ -6,9 +6,7 @@ Memes for all
 
 
 ## Creators
-### `pideking` 
-*Contact* `piderking8@gmail.com` 
-~~*Discord* `piderking`~~ 
+### `piderking` 
 
 ### `Gabb0`  
 *Contact* ` Bluh `
