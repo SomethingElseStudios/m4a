@@ -3,29 +3,62 @@ from logging import debug
 from flask import Flask, render_template, redirect, flash, request, send_file, url_for
 import os
 from werkzeug.utils import secure_filename
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+db = SQLAlchemy() #
+def create_app():
+    app = Flask(__name__)
+    db.init_app(app)
+    return app
 
-# Uploading Stuff
-UPLOAD_FOLDER = ""
+
+# Uploading Stuf {'png', 'jpg', 'gif', 'jpeg'}
+
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 IMAGE_EXSTENSIONS = {'png', 'jpg', 'gif', 'jpeg'}
+app = create_app()
+app.secret_key = "57f7d2802da848fb940239329277ccb0" # Secret key for sessions
+DB_NAME = "database.db" # name of db
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}' # creation of database
+# db.create_all()
+# Database Init
 
 
 
-app = Flask(__name__)
+# Creating the Databasse
 
-app.secret_key = "57f7d2802da848fb940239329277ccb0"
+
 
 @app.route("/")
 @app.route("/home")
 def home():
     return render_template("home.html")
-
-
-def allowed_file(fileName):
-    return '.' in fileName and \
-        fileName.rsplit('.', 1)[1].lower() in IMAGE_EXSTENSIONS
     
 
+@app.route("/signup")
+def auth():
+    if request.method == 'POST':
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        if len(email) < 4:
+            flash("Password Must Be Longer than 3 Characters")
+        elif len(username) < 4:
+            flash('username must be longer than 3 chracters')
+        else:
+            # new_User = models.User(email=email, password=password, username=username) 
+            return redirect("/login")
+    return render_template("signup.html")
 
+@app.route("/login")
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
+        return "Null" 
+    return render_template("login.html")
 @app.route('/post/<username>/<postname>/')
 def returnMeme(username, postname):
     nameOfPost, ExtOfPost    = os.path.splitext(postname)
